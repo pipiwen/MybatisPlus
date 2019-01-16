@@ -35,7 +35,7 @@ public class MpGeneratorTest {
               .setBaseColumnList(true);//生成sql片段
         //2.数据源配置
         Properties prop = new Properties();
-        //读取属性文件db.properties
+          //读取属性文件db.properties
         InputStream in = new BufferedInputStream(new FileInputStream("D:\\GitDownload\\MybatisPlus\\src\\main\\resources\\db.properties"));
         prop.load(in);     ///加载属性列表
         DataSourceConfig dataSourceConfig=new DataSourceConfig();
@@ -50,7 +50,9 @@ public class MpGeneratorTest {
         strategyConfig.setCapitalMode(true)//全局大写
                       .setDbColumnUnderline(true)//表名字段名是否使用下划线
                       .setNaming(NamingStrategy.underline_to_camel)//数据表映射到实体的命名策略
-                      .setInclude("employee");//生成的表
+                      .setTablePrefix("t_")//设置表名前缀
+                      .setInclude("t_user");//生成的表
+
         //4.包名策略配置
         PackageConfig packageConfig=new PackageConfig();
         packageConfig.setParent("com.syw.mpgenerator")

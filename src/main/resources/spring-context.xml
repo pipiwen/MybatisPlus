@@ -51,19 +51,44 @@
         <property name="mapperLocations" value="classpath:mappings/*/*.xml" />
         <!--注入全局MybatisPlus配置-->
         <property name="globalConfig" ref="globalConfiguration"/>
+        <!--插件注入-->
+        <property name="plugins">
+            <list>
+                <!--分页插件-->
+                <bean class="com.baomidou.mybatisplus.plugins.PaginationInterceptor"/>
+                <!--执行分析插件(用于方式全表删除，更新)-->
+                <bean class="com.baomidou.mybatisplus.plugins.SqlExplainInterceptor">
+                    <property name="stopProceed" value="true"/>
+                </bean>
+                <!--性能分析插件-->
+                <bean class="com.baomidou.mybatisplus.plugins.PerformanceInterceptor">
+                    <property name="format" value="true"/>
+                    <!--<property name="maxTime" value=""/>--><!--sql执行最大时间 超时抛异常-->
+                </bean>
+            </list>
+        </property>
     </bean>
+
+    <!--逻辑删除-->
+    <bean id="logicSqlInjector" class="com.baomidou.mybatisplus.mapper.LogicSqlInjector"/>
+    <!--公共字段填充-->
+    <bean id="myMetaObjectHandler" class="com.syw.mpgenerator.metaObject.MyMetaObjectHandler"/>
     <!--定义mybatisPlus全局策略配置-->
     <bean id="globalConfiguration" class="com.baomidou.mybatisplus.entity.GlobalConfiguration">
         <property name="dbColumnUnderline" value="true"/><!--下划线转驼峰 2.3version后默认值为true-->
         <property name="idType" value="3"/> <!--UUID(3, "全局唯一ID")-->
-
-    </bean>
+        <!--注入逻辑删除-->
+        <property name="sqlInjector" ref="logicSqlInjector"/>
+        <property name="logicDeleteValue" value="1"/>
+        <property name="logicNotDeleteValue" value="0"/>
+        <!--注入公共字段填充配置-->
+        <property name="metaObjectHandler" ref="myMetaObjectHandler"/>
+     </bean>
     <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
         <property name="basePackage" value="com.syw"/><!--mapper接口所在的包-->
         <property name="annotationClass" value="com.syw.rad.annotation.persistence.annotation.MyBatisDao"/>
     </bean>
-
     <!--<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         &lt;!&ndash;mapper接口所在的包&ndash;&gt;
         <property name="basePackage" value="com.syw.mapper" />
